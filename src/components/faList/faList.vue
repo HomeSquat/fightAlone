@@ -1,14 +1,17 @@
 <template>
     <div class="fa-list" ref="faList">
         <ul>
-            <li v-for="item in faList" class="fa-item" :class="">
+            <li v-for="item in falistState" class="fa-item" :class="falistClass[item.state]">
                 <div class="fa-name">{{item.name}}</div>
                 <div class="fa-user">发起人：{{item.user}}</div>
                 <div class="fa-time">{{item.time}}</div>
+                
+                <div class="fa-state">{{item.stateText}}</div>
             </li>
         </ul>
     </div>
 </template>
+
 
 <script>
     export default {
@@ -39,10 +42,25 @@
         },
         created(){
             console.log("左侧拼单列表创建完毕");
+            this.falistClass = ['stop','conduct'];
         },
         mounted() {
             //设置faList的高度为浏览器高度
             this.$refs.faList.style.height = document.body.clientHeight + "px";
+        },
+        computed:{
+            falistState(){
+                let fal = [];
+                this.faList.forEach((fa) => {
+                    if(fa.state == "1"){
+                        fa.stateText = "进行中";
+                    }else{
+                        fa.stateText = "已结束";
+                    }
+                    fal.push(fa);
+                })
+                return fal;
+            }
         }
     }
 </script>
@@ -53,15 +71,21 @@
         background-color: #eee
         box-shadow: 1px 0 8px 1px rgba(0,0,0,0.2)
         .fa-item
+            position: relative
             box-sizing: border-box
             width: 100%
             margin: 15px 0
             padding: 10px
             border-radius: 5px
-            background: linear-gradient(left,#097cf4,#409eff)
-            color: #fff
+            overflow: hidden
             cursor: pointer
             transition: all .3s
+            &.conduct
+                background: linear-gradient(left,#097cf4,#409eff)
+                color: #fff
+            &.stop
+                background: linear-gradient(left,#666,#ccc)
+                color: #fff
             &:hover
                 transform: translateX(10px)
             .fa-name
@@ -72,4 +96,24 @@
             .fa-time
                 text-align: right
                 font-size: 12px
+            .fa-state
+                position: absolute
+                right: -20px
+                top: 2px
+                transform: rotate(30deg)
+                width: 100px
+                height: 25px
+                background: red
+                text-align: center
+                line-height: 25px
+                font-size: 12px
+        .ball-container
+            .ball
+                width: 10px
+                height: 10px
+                background: red
+                .inner
+                    width: 10px
+                    height: 10px
+                    background: red
 </style>
