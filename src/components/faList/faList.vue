@@ -1,19 +1,25 @@
 <template>
     <div class="fa-list" ref="faList">
-        <ul>
-            <li v-for="item in falistState" class="fa-item" :class="falistClass[item.state]">
+        <transition-group
+            tag="ul"
+            :css="true"
+            @beforeEnter="beforeEnter"
+            @enter="enter"
+        >
+            <li v-for="(item,index) in falistState" class="fa-item" :key="index" :class="falistClass[item.state]">
                 <div class="fa-name">{{item.name}}</div>
                 <div class="fa-user">发起人：{{item.user}}</div>
                 <div class="fa-time">{{item.time}}</div>
                 
                 <div class="fa-state">{{item.stateText}}</div>
             </li>
-        </ul>
+        </transition-group>
     </div>
 </template>
 
 
 <script>
+    import  Velocity from 'velocity-animate'
     export default {
         name : "fa-list",
         data() {
@@ -61,6 +67,30 @@
                 })
                 return fal;
             }
+        },
+        methods: {
+            // 过渡进入
+            // 设置过渡进入之前的组件状态
+            beforeEnter: function (el) {
+                el.style.transform = 'translate3d(-100%,0,0)';
+            },
+            // 设置过渡进入完成时的组件状态
+            enter: function (el, done) {
+                el.offsetHeight;
+                this.$nextTick(() => {
+                    el.style.transform = 'translate3d(0,0,0)';
+                })
+                
+                // var delay = el.dataset.index * 150;
+                // setTimeout(function () {
+                //     Velocity(
+                //     el,
+                //     { opacity: 0.58 },
+                //     { complete: done }
+                //     )
+                // }, delay)
+                
+            }
         }
     }
 </script>
@@ -104,16 +134,8 @@
                 width: 100px
                 height: 25px
                 background: red
+                box-shadow: 0 0 10px 1px rgba(0,0,0,0.5)
                 text-align: center
                 line-height: 25px
                 font-size: 12px
-        .ball-container
-            .ball
-                width: 10px
-                height: 10px
-                background: red
-                .inner
-                    width: 10px
-                    height: 10px
-                    background: red
 </style>
