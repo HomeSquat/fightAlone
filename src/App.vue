@@ -12,7 +12,7 @@
                     >
                         
                         <li v-for="(item,index) in falistState" class="fa-item" :key="item.id" :data-index="index" :class="falistClass[item.state]">
-                            <router-link :to="{ name: 'news', params: { id: item.id }}">
+                            <router-link :to="{ name: 'fades', params: { id: item.id }}">
                             <div class="fa-name">{{item.name}}</div>
                             <div class="fa-user">发起人：{{item.user}}</div>
                             <div class="fa-time">{{item.time}}</div>   
@@ -82,6 +82,8 @@
         created(){
             console.log("左侧拼单列表创建完毕");
             this.falistClass = ['stop','conduct'];
+            //默认进入第一个拼单item的路由
+            this.$router.push({name: 'fades',params:{id:this.falistState[0].id}});
         },
         mounted() {
             //设置faList的高度为浏览器高度
@@ -112,7 +114,6 @@
             // 设置过渡进入完成时的组件状态
             faItemEnter: function (el, done) {
                 var delay = el.dataset.index * 200;
-                console.log(delay);
                 Velocity(
                     el,
                     { 
@@ -176,7 +177,7 @@
                         width: 100px
                         height: 25px
                         background: red
-                        box-shadow: 0 0 10px 1px rgba(0,0,0,0.5)
+                        box-shadow: 0 0 10px 1px rgba(0,0,0,0.3)
                         text-align: center
                         line-height: 25px
                         font-size: 12px

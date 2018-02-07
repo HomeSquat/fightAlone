@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Right from '@/components/right/right'
-import Test from '@/components/test/test'
+import faDetails from '@/components/right/faDetails'
+import Test from '@/components/right/test'
 
 Vue.use(Router)
 
@@ -9,13 +9,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: Right
+      name: 'test',
+      component: Test
     },
     {
-      path: '/news/:id',
-      name: 'news',
-      component: Test
+      path: '/fades/:id',
+      name: 'fades',
+      component: faDetails
     }
   ]
 })

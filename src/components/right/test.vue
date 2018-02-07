@@ -1,6 +1,6 @@
 <template>
     <div class="right">
-        <div class="title">简介</div>
+        <div class="title"></div>
     </div>
 </template>
 
