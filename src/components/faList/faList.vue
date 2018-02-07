@@ -1,12 +1,13 @@
 <template>
     <div class="fa-list" ref="faList">
         <transition-group
+            appear
             tag="ul"
-            :css="true"
-            @beforeEnter="beforeEnter"
-            @enter="enter"
+            :css="false"
+            @beforeEnter="faItemBeforeEnter"
+            @enter="faItemEnter"
         >
-            <li v-for="(item,index) in falistState" class="fa-item" :key="index" :class="falistClass[item.state]">
+            <li v-for="(item,index) in falistState" class="fa-item" :key="item.id" :data-index="index" :class="falistClass[item.state]">
                 <div class="fa-name">{{item.name}}</div>
                 <div class="fa-user">发起人：{{item.user}}</div>
                 <div class="fa-time">{{item.time}}</div>
@@ -26,18 +27,35 @@
             return {
                 faList: [
                     {
+                        id: 1,
                         name: "胡来烧饼",
                         user: "洞洞杰",
                         time: "2018-2-3 14:00",
                         state: 0
                     },
                     {
+                        id: 2,
                         name: "黄焖鸡",
                         user: "通哥",
                         time: "2018-2-4 15:00",
                         state: 1
                     },
                     {
+                        id: 3,
+                        name: "老鸭煲",
+                        user: "飞哥",
+                        time: "2018-2-3 16:00",
+                        state: 1
+                    },
+                    {
+                        id: 4,
+                        name: "老鸭煲",
+                        user: "飞哥",
+                        time: "2018-2-3 16:00",
+                        state: 1
+                    },
+                    {
+                        id: 5,
                         name: "老鸭煲",
                         user: "飞哥",
                         time: "2018-2-3 16:00",
@@ -71,25 +89,27 @@
         methods: {
             // 过渡进入
             // 设置过渡进入之前的组件状态
-            beforeEnter: function (el) {
-                el.style.transform = 'translate3d(-100%,0,0)';
+            faItemBeforeEnter: function (el) {
+                el.style.transform = `translate3d(-110%,0,0)`;
+                el.style.opacity = `0.3`;
+                el.style.transition = `all .5s`;
             },
             // 设置过渡进入完成时的组件状态
-            enter: function (el, done) {
-                el.offsetHeight;
-                this.$nextTick(() => {
-                    el.style.transform = 'translate3d(0,0,0)';
-                })
-                
-                // var delay = el.dataset.index * 150;
-                // setTimeout(function () {
-                //     Velocity(
-                //     el,
-                //     { opacity: 0.58 },
-                //     { complete: done }
-                //     )
-                // }, delay)
-                
+            faItemEnter: function (el, done) {
+                var delay = el.dataset.index * 200;
+                console.log(delay);
+                Velocity(
+                    el,
+                    { 
+                        transform:'translate3d(0,0,0)',
+                        opacity: 1
+                    },
+                    { 
+                        easing: "swing",
+                        delay: delay,
+                        complete: done
+                    }
+                )
             }
         }
     }
@@ -109,7 +129,6 @@
             border-radius: 5px
             overflow: hidden
             cursor: pointer
-            transition: all .3s
             &.conduct
                 background: linear-gradient(left,#097cf4,#409eff)
                 color: #fff
