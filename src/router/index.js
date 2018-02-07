@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import Right from '@/components/right/right'
+import Test from '@/components/test/test'
 
 Vue.use(Router)
 
@@ -9,7 +10,12 @@ export default new Router({
     {
       path: '/',
       name: 'HelloWorld',
-      component: HelloWorld
+      component: Right
+    },
+    {
+      path: '/news/:id',
+      name: 'news',
+      component: Test
     }
   ]
 })
