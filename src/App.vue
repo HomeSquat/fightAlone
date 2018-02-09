@@ -25,10 +25,7 @@
             </el-col>
             <!--商品展示-->
             <el-col :span="19">
-                <!-- <router-link to="/">y</router-link>
-                <router-link to="/news">news</router-link> -->
-                我是右侧部分
-                <router-view></router-view>
+                <router-view class="right"></router-view>
             </el-col>
         </el-row>
     </div>
@@ -36,6 +33,7 @@
 
 <script type="text/ecmascript-6">
     import  Velocity from 'velocity-animate'
+    import axios from 'axios'
     export default {
         name: 'App',
         data() {
@@ -84,6 +82,14 @@
             this.falistClass = ['stop','conduct'];
             //默认进入第一个拼单item的路由
             this.$router.push({name: 'fades',params:{id:this.falistState[0].id}});
+
+            axios.get('http://127.0.0.1/fightAlone/public/zhou').then(response => {
+                console.log(response);
+            })
+            .catch(error=>{
+                console.log(error);
+                // alert('网络错误，不能访问');
+            })
         },
         mounted() {
             //设置faList的高度为浏览器高度
@@ -138,6 +144,7 @@
         -moz-osx-font-smoothing: grayscale
         height: 100%
         .fa-list
+            box-sizing: border-box
             padding: 20px
             background-color: #eee
             box-shadow: 1px 0 8px 1px rgba(0,0,0,0.2)
@@ -177,7 +184,7 @@
                         width: 100px
                         height: 25px
                         background: red
-                        box-shadow: 0 0 10px 1px rgba(0,0,0,0.3)
+                        box-shadow: 0 0 10px 1px rgba(0,0,0,0.5)
                         text-align: center
                         line-height: 25px
                         font-size: 12px
