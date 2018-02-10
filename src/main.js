@@ -4,10 +4,14 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
+// import VueResource from 'vue-resource'
+import axios from 'axios'
 import '@/comment/css/reset.styl'
 import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.use(ElementUI);
+// Vue.use(VueResource);
+Vue.prototype.$axios = axios;
 
 Vue.config.productionTip = false
 

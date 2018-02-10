@@ -33,7 +33,6 @@
 
 <script type="text/ecmascript-6">
     import  Velocity from 'velocity-animate'
-    import axios from 'axios'
     export default {
         name: 'App',
         data() {
@@ -83,12 +82,12 @@
             //默认进入第一个拼单item的路由
             this.$router.push({name: 'fades',params:{id:this.falistState[0].id}});
 
-            axios.get('http://127.0.0.1/fightAlone/public/zhou').then(response => {
-                console.log(response);
+            this.$axios.get(process.env.HOST+'zhou').then(response => {
+                console.log(response.data);
             })
             .catch(error=>{
                 console.log(error);
-                // alert('网络错误，不能访问');
+                alert('网络错误，不能访问');
             })
         },
         mounted() {
