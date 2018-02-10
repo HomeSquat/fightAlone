@@ -82,7 +82,7 @@
             //默认进入第一个拼单item的路由
             this.$router.push({name: 'fades',params:{id:this.falistState[0].id}});
 
-            this.$axios.get(process.env.HOST+'zhou').then(response => {
+            this.$axios.get(process.env.API_HOST+'zhou').then(response => {
                 console.log(response.data);
             })
             .catch(error=>{
