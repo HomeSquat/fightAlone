@@ -60,17 +60,17 @@
                 console.log(error);
                 alert('网络错误，不能访问');
             });
-            this.$nextTick(() => {
-                this._initScroll();
-            })
+            
             
 
         },
         mounted() {
             //设置faList的高度为浏览器高度
             this.$refs.faList.style.height = document.body.clientHeight + "px";
-           
+            //wrapperDiv高度为faList的100%
             this.$refs.wrapperDiv.style.height = "100%";
+            //初始化滚动组件
+            this._initScroll();
         },
         beforeUpdate() {
             //默认进入第一个拼单item的路由
@@ -87,7 +87,7 @@
                     if(fa.state == "1"){
                         fa.stateText = "进行中";
                     }else{
-                        fa.stateText = "已结束";
+                        fa.stateText = "结算中";
                     }
                     fal.push(fa);
                 })
@@ -100,8 +100,6 @@
                     click: true
                 })
             },
-
-
 
             // 过渡进入
             // 设置过渡进入之前的组件状态
@@ -138,11 +136,12 @@
         height: 100%
         .fa-list
             box-sizing: border-box
-            padding: 20px
+            padding: 20px 0
             background-color: #eee
             box-shadow: 1px 0 8px 1px rgba(0,0,0,0.2)
             .wrapper-div
                 overflow: hidden
+                padding: 0 20px
                 .fa-item
                     position: relative
                     box-sizing: border-box
