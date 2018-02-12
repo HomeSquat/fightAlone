@@ -1,6 +1,7 @@
 <template>
     <div id="app">
         <el-row>
+            <!-- 拼单列表 -->
             <el-col :span='5'>
                 <div class="fa-list" ref="faList">
                     <div class="wrapper-div wrapper" ref="wrapperDiv">
@@ -25,9 +26,9 @@
                     </div>
                 </div>
             </el-col>
-            <!--商品展示-->
+            <!--拼单详情-->
             <el-col :span="19">
-                <router-view class="right"></router-view>
+                <router-view class="right" mode="out-in"></router-view>
             </el-col>
         </el-row>
     </div>
