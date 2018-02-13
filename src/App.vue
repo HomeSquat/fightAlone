@@ -41,29 +41,19 @@
         name: 'App',
         data() {
             return {
-                faList: [
-                    
-                ]
+                //拼单列表
+                faList: []
             }
         },
         created(){
             console.log("左侧拼单列表创建完毕");
+            //拼单的状态样式，根据拼单状态的不同设置不同的class，stop为结算中，conduct为进行中
             this.falistClass = ['stop','conduct'];
+            //初始化，刚进入网页时，为true,进入第一个路由，之后设置为false
             this.IS_INIT = true;
-
-            this.$axios.get(process.env.API_HOST+'faList').then(response => {
-                if(response.data.code == 200){
-                    this.faList = response.data.data;
-                }
-                
-            })
-            .catch(error=>{
-                console.log(error);
-                alert('网络错误，不能访问');
-            });
+            //从服务器端获取拼单列表
+            this._getfaList();
             
-            
-
         },
         mounted() {
             //设置faList的高度为浏览器高度
@@ -82,6 +72,11 @@
             
         },
         computed:{
+            /**
+             * @name 左侧拼单列表的状态
+             * @description 根据fa中的state值判断拼单是进行中的还是结算中的
+             * @author dongdongjie <zdj@ourstu.com> 2018-2-13
+             */
             falistState(){
                 let fal = [];
                 this.faList.forEach((fa) => {
@@ -96,20 +91,51 @@
             }
         },
         methods: {
+            /**
+             * @name 初始化左侧的滚动插件
+             * @description 利用better-scroll插件为左侧拼单列表设置滚动
+             * @author dongdongjie <zdj@ourstu.com> 2018-2-13
+             */
             _initScroll() {
                 this.faist = new BScroll(this.$refs.wrapperDiv,{
                     click: true
                 })
             },
-
-            // 过渡进入
-            // 设置过渡进入之前的组件状态
+            /** 
+             * @name 从服务器端获取拼单列表
+             * @description 获取拼单列表，将获取到的数据赋值给this.faList
+             * @author dongdongjie <zdj@ourstu.com> 2018-2-13
+            */
+            _getfaList() {
+                this.$axios.get(process.env.API_HOST+'faList').then(response => {
+                    if(response.data.code == 200){
+                        this.faList = response.data.data;
+                    }
+                    
+                })
+                .catch(error=>{
+                    console.log(error);
+                });
+            },
+            
+            // +------------------------------------------------------------------------+
+            // |------------------------       滚动动画     -----------------------------|
+            // +------------------------------------------------------------------------+
+            /**
+             * @name 左侧拼单列表进入之前
+             * @description 在动画开始之前将item都移动到屏幕外面，并将透明度设置为0.3，设置transition属性
+             * @author dongdongjie <zdj@ourstu.com> 2018-2-13
+             */
             faItemBeforeEnter: function (el) {
                 el.style.transform = `translate3d(-110%,0,0)`;
                 el.style.opacity = `0.3`;
                 el.style.transition = `all .5s`;
             },
-            // 设置过渡进入完成时的组件状态
+            /**
+             * @name 左侧拼单列表完成时的状态
+             * @description 动画完成时将item移动到默认位置，将透明度设置为1,
+             * @author dongdongjie <zdj@ourstu.com> 20182-13
+             */
             faItemEnter: function (el, done) {
                 var delay = el.dataset.index * 200;
                 Velocity(

@@ -2,12 +2,16 @@
     <div class="right" ref="right">
         <div class="intr-wrapper">
             <div class="title">简介</div>
-            <div class="content">{{faDetails.introduce}}</div>
+            <div class="content">
+                <div class="initiator">拼单发起人：{{faDetails.initiator}}</div>
+                <div class="time">拼单时间：<span class="start-time">{{faDetails.start_time}}</span><b>至</b><span class="end-time">{{faDetails.end_time}}</span></div>
+                <div><span>说明：</span><div class="explain">{{faDetails.introduce}}</div></div>
+            </div>
         </div>
         <div class="intr-wrapper">
             <div class="title">有谁拼单了</div>
             <el-table
-                :data="faDetails['participant']"
+                :data="faDetails.participant"
                 :height="tableHeight"
                 stripe
                 style="width: 100%">
@@ -44,8 +48,7 @@
         name : "fa-list",
         data() {
             return {
-                faDetails : {},
-                faWhos : []
+                faDetails : {}
             }
         },
         created() {
@@ -61,7 +64,7 @@
              * @author dongdongjie <zdj@ourstu.com> 2018-2-12
              */
             tableHeight(){
-                return document.body.clientHeight - 402;
+                return document.body.clientHeight - 344;
             }
         },
         watch: {
@@ -121,10 +124,21 @@
                 font-weight: 600
                 font-size: 17px
             .content
-                // overflow-y: scroll
-                min-height: 200px
-                max-height: 400px
+                height: 200px
                 padding: 20px
                 font-size: 16px
+                .time
+                    margin: 10px 0
+                    span
+                        margin: 5px
+                        font-size: 16px
+                    b
+                        font-size: 12px
+                    .start-time 
+                        color: #6cdb12
+                    .end-time
+                        color: #f0153b
+                .explain
+                    padding: 10px 30px
 
 </style>
