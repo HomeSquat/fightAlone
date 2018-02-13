@@ -37,6 +37,9 @@
                     </el-table-column>
         </el-table>
         </div>
+        {{count}}
+        {{doneTodo}}
+        <div @click="add()">jia</div>
     </div>
 </template>
 
@@ -44,6 +47,7 @@
 <script>
     import  Velocity from 'velocity-animate'
     import { Loading } from 'element-ui'
+    import { mapState,mapGetters,mapMutations } from 'vuex'
     export default {
         name : "fa-list",
         data() {
@@ -58,6 +62,13 @@
             this.$refs.right.style.height = document.body.clientHeight + "px";
         },
         computed: {
+            ...mapState({
+                count: state => state.count
+            }),
+            ...mapGetters({
+                doneTodo: 'doneTodos'
+            }),
+
             /**
              * @name 参与拼单人员列表高度
              * @description 页面高度减去简介部分高度和right的padding
@@ -75,6 +86,10 @@
             }
         },
         methods: {
+
+            ...mapMutations({
+                add: 'increment'
+            }),
             /**
              * @name 从服务器端获取拼单详情
              * @description 请求数据过程中，显示loading，这里使用element的loading组件
@@ -134,7 +149,7 @@
                         font-size: 16px
                     b
                         font-size: 12px
-                    .start-time 
+                    .start-time
                         color: #6cdb12
                     .end-time
                         color: #f0153b
