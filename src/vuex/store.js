@@ -1,35 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import rootActions from './actions'
+import rootMutations from './mutations'
+
+//modules
+import test from './modules/test'
+
 Vue.use(Vuex);
 
-
-//状态树
-const state = {
-    count: 100,
-    todos: [
-        { id: 1, text: '...', done: true },
-        { id: 1, text: '...', done: true },
-        { id: 2, text: '...', done: false }
-      ]
-}
-
-//过滤器
-const getters = {
-    doneTodos: state => {
-        return state.todos.filter(todo => todo.done);
-    }
-}
-
-//变化方法
-const mutation = {
-    increment : state => {
-        state.count++;
-    }
-}
+const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({
-    state,
-    getters,
-    mutation
+    strict: debug,
+    mutations: rootMutations,
+    actions: rootActions,
+    modules: {
+        test
+    }
 })

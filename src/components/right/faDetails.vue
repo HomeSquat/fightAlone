@@ -39,7 +39,7 @@
         </div>
         {{count}}
         {{doneTodo}}
-        <div @click="add()">jia</div>
+        <div @click="addAction()">jia</div>
     </div>
 </template>
 
@@ -47,7 +47,7 @@
 <script>
     import  Velocity from 'velocity-animate'
     import { Loading } from 'element-ui'
-    import { mapState,mapGetters,mapMutations } from 'vuex'
+    import { mapState,mapGetters,mapMutations,mapActions } from 'vuex'
     export default {
         name : "fa-list",
         data() {
@@ -62,10 +62,10 @@
             this.$refs.right.style.height = document.body.clientHeight + "px";
         },
         computed: {
-            ...mapState({
+            ...mapState('test',{
                 count: state => state.count
             }),
-            ...mapGetters({
+            ...mapGetters('test',{
                 doneTodo: 'doneTodos'
             }),
 
@@ -87,8 +87,12 @@
         },
         methods: {
 
-            ...mapMutations({
-                add: 'increment'
+            ...mapMutations('test',{
+                add: 'add'
+            }),
+
+            ...mapActions('test',{
+                addAction: 'addAction'
             }),
             /**
              * @name 从服务器端获取拼单详情
