@@ -24,6 +24,9 @@
                             </li>
                         </transition-group>
                     </div>
+                    <div class="addfa-wrapper">
+                        <div class="addfa">发起拼单</div>
+                    </div>
                 </div>
             </el-col>
             <!--拼单详情-->
@@ -163,7 +166,7 @@
         height: 100%
         .fa-list
             box-sizing: border-box
-            padding: 20px 0
+            padding: 20px 0 120px 0
             background-color: #eee
             box-shadow: 1px 0 8px 1px rgba(0,0,0,0.2)
             .wrapper-div
@@ -209,4 +212,16 @@
                             text-align: center
                             line-height: 25px
                             font-size: 12px
+            .addfa-wrapper
+                position: relative
+                box-sizing: border-box
+                width: 100%
+                height: 120px
+                padding: 20px
+                .addfa
+                    width: 100%
+                    height: 100%
+                    border-radius: 5px
+                    border: 1px dashed #409eff
+                    text-align: center
 </style>
