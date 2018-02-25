@@ -178,7 +178,16 @@
                 this.$axios.post(process.env.API_HOST+'addFa',this.form)
                 .then(response => {
                     console.log(response);
-                    
+                    if(response.data.code == 200){
+                        //关闭模态框
+                        this.addfaFromShow = false;
+                        //左下角弹出消息框，提示成功信息
+                        this.$notify({
+                            title: '发起拼单成功',
+                            message: '您已成功发起拼单，请注意拼单状态',
+                            position: 'bottom-left'
+                        });
+                    }
                 })
                 .catch(error => {
                     console.log('4321');
