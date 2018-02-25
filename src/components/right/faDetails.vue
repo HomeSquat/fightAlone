@@ -37,9 +37,9 @@
                     </el-table-column>
         </el-table>
         </div>
-        {{count}}
+        <!-- {{count}}
         {{doneTodo}}
-        <div @click="addAction()">jia</div>
+        <div @click="addAction()">jia</div> -->
     </div>
 </template>
 

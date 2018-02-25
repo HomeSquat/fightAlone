@@ -25,7 +25,7 @@
                         </transition-group>
                     </div>
                     <div class="addfa-wrapper">
-                        <div class="addfa">发起拼单</div>
+                        <div class="addfa" @click="changefaFromShow()">发起拼单</div>
                     </div>
                 </div>
             </el-col>
@@ -34,18 +34,59 @@
                 <router-view class="right"></router-view>
             </el-col>
         </el-row>
+
+        <el-dialog title="发起拼单" :visible.sync="addfaFromShow">
+            <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item label="拼单标题">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="开始时间">
+                    <el-col :span="11">
+                    <el-date-picker type="date" placeholder="选择日期" v-model="form.start_time" style="width: 100%;"></el-date-picker>
+                    </el-col>
+                    <!-- <el-col class="line" :span="2">-</el-col>
+                    <el-col :span="11">
+                    <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
+                    </el-col> -->
+                </el-form-item>
+                <el-form-item label="结束时间">
+                    <el-col :span="11">
+                    <el-date-picker type="date" placeholder="选择日期" v-model="form.end_time" style="width: 100%;"></el-date-picker>
+                    </el-col>
+                    <!-- <el-col class="line" :span="2">-</el-col>
+                    <el-col :span="11">
+                    <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
+                    </el-col> -->
+                </el-form-item>
+                <el-form-item label="拼单说明">
+                    <el-input type="textarea" v-model="form.introduce"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="onSubmitAdd">立即拼单</el-button>
+                    <el-button @click="changefaFromShow()">取消</el-button>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import  Velocity from 'velocity-animate'
     import BScroll from 'better-scroll'
+    import qs from 'qs'
     export default {
         name: 'App',
         data() {
             return {
                 //拼单列表
-                faList: []
+                faList: [],
+                addfaFromShow: false,
+                form: {
+                    name: '',
+                    introduce: '',
+                    start_time: '',
+                    end_time: ''
+                }
             }
         },
         created(){
@@ -116,9 +157,32 @@
                     }
                     
                 })
-                .catch(error=>{
+                .catch(error => {
                     console.log(error);
                 });
+            },
+            /**
+             * @name 发起拼单模态框的显示与隐藏
+             * @description 改变addfaFromShow状态，true时发起拼单的模态框显示，false时模态框隐藏
+             * @author dongdongjie <zdj@ourstu.com> 2018-2-25
+             */
+            changefaFromShow() {
+                this.addfaFromShow = !this.addfaFromShow;
+            },
+            /**
+             * @name 发起订单
+             * @description 发起拼单，向服务器发送数据，将表单内容发送到服务器，存储入数据库
+             * @author dongdongjie <zdj@ourstu.com> 2018-2-25
+             */
+            onSubmitAdd() {
+                this.$axios.post(process.env.API_HOST+'addFa',this.form)
+                .then(response => {
+                    console.log(response);
+                    
+                })
+                .catch(error => {
+                    console.log('4321');
+                })
             },
             
             // +------------------------------------------------------------------------+
@@ -224,4 +288,17 @@
                     border-radius: 5px
                     border: 1px dashed #409eff
                     text-align: center
+                    line-height: 80px
+                    color: #409eff
+                    cursor: pointer
+    .addfa-from
+        position: fixed
+        left: 50%
+        top: 50%
+        transform: translate(-50%,-50%)
+        width: 800px
+        height: 600px
+        border-radius: 5px
+        background-color: #fff
+        box-shadow: 0 0 15px 1px rgba(0,0,0,0.2)
 </style>
