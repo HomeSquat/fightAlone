@@ -1,7 +1,21 @@
 <template>
     <div id="app">
+        <!-- 登录 -->
+                <div class="login-wrapper">
+                    <a ref="loginbtn" class="login" href="javascript:;" @click="loginShow=true">登录</a>
+                    <el-popover
+                        ref="user"
+                        placement="top"
+                        width="160">
+                        <p>这个人很懒，什么都没写</p>
+                        <div style="text-align: right; margin: 0">
+                            <el-button type="primary" size="mini">注销</el-button>
+                        </div>
+                    </el-popover>
+                    <span ref="username" class="username" v-popover:user></span>
+                </div>
         <el-row>
-            <!-- 拼单列表 -->
+            <!-- 拼单列表-start -->
             <el-col :span='5'>
                 <div class="fa-list" ref="faList">
                     <div class="wrapper-div wrapper" ref="wrapperDiv">
@@ -29,18 +43,20 @@
                     </div>
                 </div>
             </el-col>
-            <!--拼单详情-->
+            <!-- 拼单列表-end -->
+            <!--拼单详情-start-->
             <el-col :span="19">
                 <router-view class="right"></router-view>
             </el-col>
+            <!-- 拼单详情-end -->
         </el-row>
 
         <el-dialog title="发起拼单" :visible.sync="addfaFromShow">
-            <el-form ref="form" :model="form" label-width="80px">
-                <el-form-item label="拼单标题">
+            <el-form ref="form" :rules="rules" :model="form"  label-width="80px">
+                <el-form-item label="拼单标题" prop="name">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
-                <el-form-item label="开始时间">
+                <el-form-item label="开始时间" prop="start_time">
                     <el-col :span="11">
                     <el-date-picker type="date" placeholder="选择日期" v-model="form.start_time" style="width: 100%;"></el-date-picker>
                     </el-col>
@@ -49,7 +65,7 @@
                     <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
                     </el-col> -->
                 </el-form-item>
-                <el-form-item label="结束时间">
+                <el-form-item label="结束时间"  prop="end_time">
                     <el-col :span="11">
                     <el-date-picker type="date" placeholder="选择日期" v-model="form.end_time" style="width: 100%;"></el-date-picker>
                     </el-col>
@@ -58,14 +74,33 @@
                     <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
                     </el-col> -->
                 </el-form-item>
-                <el-form-item label="拼单说明">
+                <el-form-item label="拼单说明" prop="introduce">
                     <el-input type="textarea" v-model="form.introduce"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="onSubmitAdd">立即拼单</el-button>
+                    <el-button type="primary" @click="onSubmitAdd('form')">立即拼单</el-button>
                     <el-button @click="changefaFromShow()">取消</el-button>
                 </el-form-item>
             </el-form>
+        </el-dialog>
+
+        <el-dialog title="登录" width="20%" center :visible.sync="loginShow">
+            <el-form ref="loginform" :rules="loginrules" :model="loginform">
+                <el-form-item prop="username">
+                    <el-input v-model="loginform.username" placeholder="用户名"></el-input>
+                </el-form-item>
+                <el-form-item prop="userpassword">
+                    <el-input v-model="loginform.userpassword" type="password" placeholder="密码"></el-input>
+                </el-form-item>
+                <!-- <el-form-item >
+                    <el-button type="primary"  @click="login('loginform')">登录</el-button>
+                    <el-button @click="resetLogin('loginform')">重置</el-button>
+                </el-form-item> -->
+            </el-form>
+            <span :model="loginform" slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="login('loginform')">登录</el-button>
+                <el-button @click="resetLogin('loginform')">重置</el-button>
+            </span>
         </el-dialog>
     </div>
 </template>
@@ -74,18 +109,51 @@
     import  Velocity from 'velocity-animate'
     import BScroll from 'better-scroll'
     import qs from 'qs'
+    import { mapState,mapGetters,mapMutations,mapActions } from 'vuex'
     export default {
         name: 'App',
         data() {
             return {
                 //拼单列表
                 faList: [],
+                //发起拼单模态框是否显示，false不显示，true显示
                 addfaFromShow: false,
+                //表单内容
                 form: {
                     name: '',
                     introduce: '',
                     start_time: '',
                     end_time: ''
+                },
+                //表单验证
+                rules: {
+                    name: [
+                        { required: true, message: '请输入拼单标题', trigger: 'blur' },
+                        { min: 1, max: 10, message: '长度在 1 到 10 个字符', trigger: 'blur' }
+                    ],
+                    introduce: [
+                        { required: true, message: '请输入拼单说明', trigger: 'blur' },
+                        { min: 1, max: 100, message: '长度在 1 到 100 个字符', trigger: 'blur' }
+                    ],
+                    start_time: [
+                        { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+                    ],
+                    end_time: [
+                        { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+                    ]
+                },
+                loginShow: false,
+                loginform: {
+                    username: '',
+                    userpassword: ''
+                },
+                loginrules: {
+                    username: [
+                        { required: true, message: '用户名不能为空', trigger: 'blur' }
+                    ],
+                    userpassword: [
+                        { required: true, message: '密码不能为空', trigger: 'blur' }
+                    ]
                 }
             }
         },
@@ -100,8 +168,8 @@
             
         },
         mounted() {
-            //设置faList的高度为浏览器高度
-            this.$refs.faList.style.height = document.body.clientHeight + "px";
+            //设置faList的高度为浏览器高度减去头部高度41
+            this.$refs.faList.style.height = document.body.clientHeight - 41 + "px";
             //wrapperDiv高度为faList的100%
             this.$refs.wrapperDiv.style.height = "100%";
             //初始化滚动组件
@@ -116,6 +184,14 @@
             
         },
         computed:{
+            /**
+             * @name vuex中的user信息
+             * @author dongdongjei <zdj@ourstu.com>
+             */
+            ...mapState('user',{
+                isLogin: state => state.isLogin,
+                user: state => state.user
+            }),
             /**
              * @name 左侧拼单列表的状态
              * @description 根据fa中的state值判断拼单是进行中的还是结算中的
@@ -174,26 +250,79 @@
              * @description 发起拼单，向服务器发送数据，将表单内容发送到服务器，存储入数据库
              * @author dongdongjie <zdj@ourstu.com> 2018-2-25
              */
-            onSubmitAdd() {
-                this.$axios.post(process.env.API_HOST+'addFa',this.form)
-                .then(response => {
-                    console.log(response);
-                    if(response.data.code == 200){
-                        //关闭模态框
-                        this.addfaFromShow = false;
-                        //左下角弹出消息框，提示成功信息
-                        this.$notify({
-                            title: '发起拼单成功',
-                            message: '您已成功发起拼单，请注意拼单状态',
-                            position: 'bottom-left'
-                        });
+            onSubmitAdd(form) {
+                this.$refs.form.validate((valid) => {
+                    if (valid) {
+                        //验证成功之后向服务器发送数据
+                        this.$axios.post(process.env.API_HOST+'addFa',this.form)
+                        .then(response => {
+                            console.log(response);
+                            if(response.data.code == 200){
+                                //关闭模态框
+                                this.addfaFromShow = false;
+                                //左下角弹出消息框，提示成功信息
+                                this.$notify({
+                                    title: '发起拼单成功',
+                                    message: '您已成功发起拼单，请注意拼单状态',
+                                    type: 'success',
+                                    position: 'bottom-left'
+                                });
+                                //将新发起的拼单添加到this.faList中
+                                this.faList.push(response.data.data);
+                            }
+                        })
+                        .catch(error => {
+                            console.log('4321');
+                            this.$notify.error({
+                                title: '发起拼单失败',
+                                message: '未能成功发起拼单，请检查您的网络状态！'
+                            });
+                        })
+                    } else {
+                        return false;
+                    }
+                });
+            },
+            /**
+             * @name 重置登录表单
+             * @description 点击重置按钮，重置登录表单
+             * @author dongdongjie <zdj@ourstu.com> 20182-25
+             */
+            resetLogin(loginform) {
+                this.$refs.loginform.resetFields();
+            },
+
+            login(loginform) {
+                this.$refs.loginform.validate((valid) => {
+                    if(valid){
+                        this.$axios.post(process.env.API_HOST+'login',this.loginform)
+                        .then(response => {
+                            console.log(response);
+                            //将登录按钮隐藏
+                            this.$refs.loginbtn.style.display = 'none';
+                            // 将用户名显示出来，他的值为服务器返回的值
+                            this.$refs.username.innerHTML = response.data.data.name;
+                            // 将登录模态框隐藏
+                            this.loginShow = false;
+                            //提示用户登录成功
+                            this.$message({
+                                message: `亲爱的${response.data.data.name},您已成功登录`,
+                                type: 'success'
+                            });
+                        })
+                        .catch(error => {
+                            //提示用户登录失败
+                            this.$message({
+                                message: `登录失败，请确保您输入的信息正确无误`,
+                                type: 'error'
+                            });
+                        })
+                    }else{
+                        return false;
                     }
                 })
-                .catch(error => {
-                    console.log('4321');
-                })
             },
-            
+
             // +------------------------------------------------------------------------+
             // |------------------------       动画部分     -----------------------------|
             // +------------------------------------------------------------------------+
@@ -237,6 +366,20 @@
         -webkit-font-smoothing: antialiased
         -moz-osx-font-smoothing: grayscale
         height: 100%
+        .login-wrapper
+            box-sizing: border-box
+            width: 100%
+            height: 40px
+            margin-bottom: 1px
+            padding: 0 20px
+            box-shadow: 0 1px 5px 1px rgba(0,0,0,0.2)
+            line-height: 40px
+            text-align: right
+            .login
+                text-decoration: none
+                color: #999
+            .username
+                color: #409eff
         .fa-list
             box-sizing: border-box
             padding: 20px 0 120px 0

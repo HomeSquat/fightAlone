@@ -59,7 +59,8 @@
             this._getDetails();
         },
         mounted() {
-            this.$refs.right.style.height = document.body.clientHeight + "px";
+            // 右侧高度为页面高度-头部高度41
+            this.$refs.right.style.height = document.body.clientHeight - 41 + "px";
         },
         computed: {
             ...mapState('test',{
@@ -75,7 +76,7 @@
              * @author dongdongjie <zdj@ourstu.com> 2018-2-12
              */
             tableHeight(){
-                return document.body.clientHeight - 344;
+                return document.body.clientHeight - 385;
             }
         },
         watch: {

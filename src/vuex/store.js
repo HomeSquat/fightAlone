@@ -6,6 +6,7 @@ import rootMutations from './mutations'
 
 //modules
 import test from './modules/test'
+import user from './modules/user'
 
 Vue.use(Vuex);
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     mutations: rootMutations,
     actions: rootActions,
     modules: {
-        test
+        test,
+        user
     }
 })
