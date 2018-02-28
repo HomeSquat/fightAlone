@@ -2,17 +2,18 @@
     <div id="app">
         <!-- 登录 -->
                 <div class="login-wrapper">
-                    <a ref="loginbtn" class="login" href="javascript:;" @click="loginShow=true">登录</a>
+                    <a ref="loginbtn" class="login" href="javascript:;" @click="loginShow=true" v-show="!isLogin">登录</a>
                     <el-popover
                         ref="user"
                         placement="top"
+                        trigger="hover"
                         width="160">
                         <p>这个人很懒，什么都没写</p>
                         <div style="text-align: right; margin: 0">
-                            <el-button type="primary" size="mini">注销</el-button>
+                            <el-button @click="canceluser()" type="primary" size="mini">退出</el-button>
                         </div>
                     </el-popover>
-                    <span ref="username" class="username" v-popover:user></span>
+                    <span ref="username" class="username" v-popover:user v-show="isLogin">{{user.name}}</span>
                 </div>
         <el-row>
             <!-- 拼单列表-start -->
@@ -211,6 +212,10 @@
             }
         },
         methods: {
+            ...mapMutations('user',{
+                change: 'change',
+                cancel: 'cancel'
+            }),
             /**
              * @name 初始化左侧的滚动插件
              * @description 利用better-scroll插件为左侧拼单列表设置滚动
@@ -243,7 +248,15 @@
              * @author dongdongjie <zdj@ourstu.com> 2018-2-25
              */
             changefaFromShow() {
-                this.addfaFromShow = !this.addfaFromShow;
+                if(this.isLogin){
+                    this.addfaFromShow = !this.addfaFromShow;
+                }else{
+                    this.$message({
+                        message: '您还没有登录哦，请先登录吧！',
+                        type: 'warning'
+                    });
+                }
+                
             },
             /**
              * @name 发起订单
@@ -292,6 +305,11 @@
                 this.$refs.loginform.resetFields();
             },
 
+            /**
+             * @name 登录
+             * @description 输入用户名和密码之后的登录逻辑
+             * @author dongdongjie <zdj@ourstu.com>
+             */
             login(loginform) {
                 this.$refs.loginform.validate((valid) => {
                     if(valid){
@@ -299,9 +317,9 @@
                         .then(response => {
                             console.log(response);
                             //将登录按钮隐藏
-                            this.$refs.loginbtn.style.display = 'none';
+                            // this.$refs.loginbtn.style.display = 'none';
                             // 将用户名显示出来，他的值为服务器返回的值
-                            this.$refs.username.innerHTML = response.data.data.name;
+                            // this.$refs.username.innerHTML = response.data.data.name;
                             // 将登录模态框隐藏
                             this.loginShow = false;
                             //提示用户登录成功
@@ -309,6 +327,8 @@
                                 message: `亲爱的${response.data.data.name},您已成功登录`,
                                 type: 'success'
                             });
+                            //将当前登录用户的信息存入vuex中
+                            this.change(response.data.data);
                         })
                         .catch(error => {
                             //提示用户登录失败
@@ -321,6 +341,20 @@
                         return false;
                     }
                 })
+            },
+            /**
+             * @name 退出当前账号
+             * @description 点击退出，退出当前账号，将vuex中的值清空
+             * @author dongdongjie <zdj@ourstu.com>
+             */
+            canceluser() {
+                //提示退出成功
+                this.$message({
+                    message: '您以退出当前账号',
+                    type: 'success'
+                });
+                //调用cancel方法将vuex中user的值改变
+                this.cancel();
             },
 
             // +------------------------------------------------------------------------+
