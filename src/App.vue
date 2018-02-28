@@ -350,7 +350,7 @@
             canceluser() {
                 //提示退出成功
                 this.$message({
-                    message: '您以退出当前账号',
+                    message: '您已退出当前账号',
                     type: 'success'
                 });
                 //调用cancel方法将vuex中user的值改变
